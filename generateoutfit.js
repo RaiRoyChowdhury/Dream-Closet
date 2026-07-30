@@ -23,7 +23,7 @@ async()=>{
 
 
         const response = await fetch(
-        `http://localhost:3999/recommendation/${occasion}`
+        `https://dream-closet-cd49.onrender.com/recommendation/${occasion}`
         );
 
 
@@ -243,17 +243,17 @@ function getImage(image){
     }
 
     if(image.startsWith("db/uploads/")){
-        return "http://localhost:3999/" + image;
+        return "https://dream-closet-cd49.onrender.com/" + image;
     }
 
     if(image.startsWith("uploads/")){
-        return "http://localhost:3999/" + image;
+        return "https://dream-closet-cd49.onrender.com/" + image;
     }
 
     if(image.startsWith("/uploads/")){
-        return "http://localhost:3999" + image;
+        return "https://dream-closet-cd49.onrender.com" + image;
     }
 
-    return "http://localhost:3999/db/uploads/" + image;
+    return "https://dream-closet-cd49.onrender.com/db/uploads/" + image;
 
 }

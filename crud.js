@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:3999/api/items";
-const IMAGE_URL = "http://localhost:3999/db/uploads/";
+const API_URL = "https://dream-closet-cd49.onrender.com/api/items";
+const IMAGE_URL = "https://dream-closet-cd49.onrender.com/db/uploads/";
 
 
 // ELEMENTS
@@ -186,11 +186,11 @@ item.image
 ? item.image.replace(/\\/g, "/").startsWith("http")
     ? item.image.replace(/\\/g, "/")
     : item.image.replace(/\\/g, "/").startsWith("db/uploads/")
-    ? "http://localhost:3999/" + item.image.replace(/\\/g, "/")
+    ? "https://dream-closet-cd49.onrender.com/" + item.image.replace(/\\/g, "/")
     : item.image.replace(/\\/g, "/").startsWith("/uploads/")
-    ? "http://localhost:3999" + item.image.replace(/\\/g, "/")
+    ? "https://dream-closet-cd49.onrender.com" + item.image.replace(/\\/g, "/")
     : item.image.replace(/\\/g, "/").startsWith("uploads/")
-    ? "http://localhost:3999/" + item.image.replace(/\\/g, "/")
+    ? "https://dream-closet-cd49.onrender.com/" + item.image.replace(/\\/g, "/")
     : IMAGE_URL + item.image.replace(/\\/g, "/")
 : ""
 }"
@@ -530,9 +530,9 @@ function openEditCard(id){
         item.image.startsWith("http")
         ? item.image
         : item.image.startsWith("/uploads/")
-        ? "http://localhost:3999" + item.image
+        ? "https://dream-closet-cd49.onrender.com" + item.image
         : item.image.startsWith("uploads/")
-        ? "http://localhost:3999/" + item.image
+        ? "https://dream-closet-cd49.onrender.com/" + item.image
         : IMAGE_URL + item.image
     }"
     class="w-full h-full object-contain"
