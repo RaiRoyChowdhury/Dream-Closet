@@ -1,4 +1,5 @@
 console.log(__dirname);
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -14,7 +15,6 @@ const upload = require("./db/uploads/middleware/upload.js");
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
-app.use("/db/uploads", express.static("db/uploads"));
 app.use(
     "/recommendation",
     recommendationRoutes
@@ -81,7 +81,7 @@ const newItem = new Item({
 
     ...req.body,
 
-   image: req.file ? req.file.path.replace(/\\/g, "/") : "",
+  image: req.file ? req.file.path : "",
 occasion: req.body.occasion 
 ? JSON.parse(req.body.occasion)
 : [],
