@@ -1,0 +1,126 @@
+const tinycolors = require('tinycolor2');
+const joi = require('joi');
+const luxon = require('luxon');
+const mongoose = require('mongoose');
+
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+
+    category: {
+        type: String,
+        enum: [
+            "Top",
+            "Bottom",
+            "Dress",
+            "Outerwear",
+            "Shoes",
+            "Accessory"
+        ],
+        required: true
+    },
+
+    color: {
+        type: String,
+        enum: [
+            "Black",
+            "White",
+            "Grey",
+            "Navy",
+            "Blue",
+            "Light Blue",
+            "Beige",
+            "Brown",
+            "Olive",
+            "Green",
+            "Yellow",
+            "Orange",
+            "Red",
+            "Pink",
+            "Purple",
+            "Maroon"
+        ],
+        required: true
+    },
+       style: {
+        type: String,
+        enum: [
+            "Casual",
+            "Formal",
+            "Smart Casual",
+            "Party",
+            "Sporty",
+            "Traditional"
+        ]
+    },
+    occasion: [{
+        type: String,
+        enum: [
+            "College",
+            "Casual",
+            "Office",
+            "Business Meeting",
+            "Interview",
+            "Date",
+            "Party",
+            "Wedding",
+            "Festival",
+            "Gym",
+            "Travel",
+            "Formal Event"
+        ]
+    }],
+
+    season: [{
+        type: String,
+        enum: [
+            "Summer",
+            "Winter",
+            "Monsoon",
+            "Spring",
+            "Autumn",
+            "All Season"
+        ]
+    }],
+
+    pattern: {
+        type: String,
+        enum: [
+            "Solid",
+            "Striped",
+            "Checked",
+            "Floral",
+            "Printed",
+            "Graphic"
+        ]
+    },
+       material: {
+        type: String,
+        enum: [
+            "Cotton",
+            "Denim",
+            "Leather",
+            "Wool",
+            "Silk",
+            "Synthetic",
+            "Other"
+        ]
+    },
+
+     shade: {
+        type: String,
+        enum: [
+            "Light",
+            "Medium",
+            "Dark"
+        ]
+    },
+
+    image: {
+        type: String
+    }
+
+}, { timestamps: true });
+ module.exports = mongoose.model('Item', itemSchema);

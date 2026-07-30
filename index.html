@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dream Closet ✨</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ==========================================
+   LUXURY DESIGN SYSTEM & THEMING
+========================================== */
+:root {
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  /* Premium Color Palette */
+  --bg-dark: #0f0a0d;
+  --wine-deep: #4c0519;
+  --burgundy-accent: #831843;
+  --rose-accent: #be185d;
+  --champagne-gold: #fbcfe8;
+  --champagne-light: #fff1f2;
+  --text-primary: #2e0616;
+  --text-muted: #804a60;
+
+  /* Glassmorphism Variables */
+  --glass-surface: rgba(255, 255, 255, 0.72);
+  --glass-surface-hover: rgba(255, 255, 255, 0.9);
+  --glass-border: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(251, 207, 232, 0.3));
+  --glass-border-solid: rgba(255, 255, 255, 0.85);
+  
+  /* Elevation & Glows */
+  --shadow-ambient: 0 30px 60px -12px rgba(76, 5, 25, 0.12);
+  --shadow-glow: 0 0 25px rgba(190, 24, 93, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==========================================
+   HIGH-END BACKGROUND ARCHITECTURE
+========================================== */
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background-color: #fdf2f8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient Glowing Orbs Background Layer */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  background: 
+    radial-gradient(circle at 12% 15%, rgba(251, 207, 232, 0.8) 0%, transparent 45%),
+    radial-gradient(circle at 88% 25%, rgba(243, 232, 255, 0.85) 0%, transparent 40%),
+    radial-gradient(circle at 50% 70%, rgba(254, 226, 226, 0.75) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(251, 207, 232, 0.6) 0%, transparent 40%),
+    linear-gradient(135deg, #fff1f2 0%, #faf5ff 40%, #fdf2f8 100%);
+  background-attachment: fixed;
+}
+
+/* Luxury Grain Noise Overlay for Matte Polish */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ==========================================
+   HIGH-FASHION TYPOGRAPHY
+========================================== */
+.font-sweet, h1, h2, h3 {
+  font-family: var(--font-heading) !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #4c0519 0%, #831843 60%, #be185d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ==========================================
+   LUXURY STICKY NAVBAR
+========================================== */
+.navbar {
+  position: sticky;
+  top: 1rem;
+  z-index: 100;
+  width: calc(100% - 3rem);
+  max-width: 1280px;
+  margin: 0 auto 2rem auto;
+  padding: 1.1rem 2.5rem;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 100px;
+  box-shadow: 0 15px 35px rgba(76, 5, 25, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.4s ease;
+}
+
+.nav-brand {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--wine-deep);
+  text-decoration: none;
+}
+
+.nav-brand span {
+  color: var(--rose-accent);
+  font-weight: 400;
+  font-style: italic;
+  text-transform: lowercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--wine-deep);
+  font-size: 0.825rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0.2rem 0;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--burgundy-accent), var(--rose-accent));
+  border-radius: 2px;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link:hover {
+  color: var(--rose-accent);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--wine-deep);
+  cursor: pointer;
+}
+
+/* ==========================================
+   GLASS PANELS & CONTAINERS
+========================================== */
+.glass {
+  background: var(--glass-surface);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-border-solid);
+  border-radius: 2rem;
+  box-shadow: var(--shadow-ambient);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2rem;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(251, 207, 232, 0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ==========================================
+   INPUTS & FORM CONTROLS
+========================================== */
+.input-box, input, select, textarea {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(251, 207, 232, 0.8) !important;
+  border-radius: 1rem !important;
+  padding: 0.9rem 1.25rem !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--wine-deep) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.input-box:hover, input:hover, select:hover {
+  border-color: #f472b6 !important;
+  background: #ffffff !important;
+}
+
+.input-box:focus, input:focus, select:focus {
+  outline: none !important;
+  background: #ffffff !important;
+  border-color: var(--rose-accent) !important;
+  box-shadow: 0 0 0 4px rgba(190, 24, 93, 0.12), 0 10px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* ==========================================
+   CARDS & GRID ITEMS
+========================================== */
+.card {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(76, 5, 25, 0.04);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 45px -10px rgba(76, 5, 25, 0.12), var(--shadow-glow);
+  border-color: rgba(251, 207, 232, 0.8);
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+button, .btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  padding: 0.9rem 1.75rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-3px);
+}
+
+button:active, .btn:active {
+  transform: translateY(-1px);
+}
+
+.bg-pink-500, .btn-primary {
+  background: linear-gradient(135deg, #4c0519 0%, #831843 50%, #be185d 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(131, 24, 67, 0.4);
+}
+
+.bg-pink-500:hover, .btn-primary:hover {
+  box-shadow: 0 15px 30px -5px rgba(190, 24, 93, 0.5), 0 0 20px rgba(236, 72, 153, 0.3);
+  filter: brightness(1.1);
+}
+
+/* ==========================================
+   RECOMMENDATION PANEL & UI DETAILS
+========================================== */
+#recommendationResult {
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#recommendationResult > div {
+  border: 1px solid rgba(251, 207, 232, 0.7);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px);
+  transition: all 0.35s ease;
+}
+
+#recommendationResult > div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(131, 24, 67, 0.08);
+  border-color: var(--champagne-gold);
+}
+
+#itemCount {
+  background: linear-gradient(135deg, #831843 0%, #be185d 100%) !important;
+  color: #ffffff;
+  border-radius: 50px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow: 0 5px 15px rgba(190, 24, 93, 0.3);
+}
+
+img {
+  border-radius: 1rem;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  object-fit: cover;
+}
+
+img:hover {
+  transform: scale(1.03);
+}
+
+/* ==========================================
+   RESPONSIVE LAYOUT
+========================================== */
+
+@media (max-width: 1024px) {
+  body {
+    padding: 1rem !important;
+  }
+
+  .navbar {
+    width: 100%;
+    border-radius: 1.25rem;
+    padding: 1rem 1.75rem;
+  }
+
+  .font-sweet.text-5xl, h1.text-5xl {
+    font-size: 2.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem !important;
+  }
+
+  .navbar {
+    padding: 0.85rem 1.25rem;
+    border-radius: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .nav-toggle {
+
+    display: inline-block; /* Show the hamburger button */
+    margin-left: auto; /* Pushes the hamburger button to the far right side */
+    padding: 0.5rem;
+    font-size: 1.6rem;
+    background: transparent;
+    border: none;
+    color: var(--wine-deep);
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 40px rgba(76, 5, 25, 0.1);
+    gap: 1.25rem;
+  }
+
+  .nav-links.active {
+    display: flex;
+    animation: slideUpFade 0.3s ease;
+  }
+
+  .glass {
+    border-radius: 1.5rem !important;
+    padding: 1.25rem !important;
+  }
+
+  .font-sweet.text-5xl, h1.text-5xl {
+    font-size: 1.9rem !important;
+  }
+
+  .font-sweet.text-4xl, h2.text-4xl {
+    font-size: 1.5rem !important;
+  }
+
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  #preview {
+    height: 220px !important;
+  }
+
+  button, #recommendBtn, #recommendOccasion {
+    width: 100% !important;
+  }
+
+  .card {
+    padding: 1rem !important;
+  }
+
+  .card img {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-brand {
+    font-size: 1rem;
+  }
+
+  .font-sweet.text-5xl, h1.text-5xl {
+    font-size: 1.6rem !important;
+  }
+
+  .font-sweet.text-4xl, h2.text-4xl {
+    font-size: 1.3rem !important;
+  }
+
+  input, select, button {
+    font-size: 0.8rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+</style>
+
+
+</head>
+
+
+<body class="p-6 text-pink-950">
+
+    <nav class="navbar">
+  <a href="#" class="nav-brand">Style<span>Studio</span></a>
+  <button class="nav-toggle" aria-label="Toggle Navigation" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+    &#9776;
+  </button>
+  <ul class="nav-links">
+    <li><a href="#wardrobe" class="nav-link">Wardrobe</a></li>
+    <li><a href="#recommendations" class="nav-link">Recommendations</a></li>
+    <li><a href="#upload" class="nav-link">Add Item</a></li>
+  </ul>
+</nav>
+
+
+<div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
+
+
+<!-- ADD ITEM -->
+
+<div>
+
+
+<div class="glass rounded-[3rem] p-7 sticky top-5">
+
+
+<h1 class="font-sweet text-5xl font-bold text-pink-900">
+
+🎀 Dream Closet
+
+</h1>
+
+
+<p class="text-pink-500 mb-6">
+
+Build your personal fashion archive
+
+</p>
+
+
+
+<form id="itemForm" class="space-y-4">
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+❤️ Item Name
+
+</label>
+
+
+<input
+
+id="name"
+
+required
+
+placeholder="Black silk shirt"
+
+class="w-full p-3 rounded-2xl input-box">
+
+
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+👚 Category
+
+</label>
+
+
+<select id="category"
+class="w-full p-3 rounded-2xl input-box">
+
+
+<option>Top</option>
+<option>Bottom</option>
+<option>Dress</option>
+<option>Outerwear</option>
+<option>Shoes</option>
+<option>Accessory</option>
+
+
+</select>
+
+
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+🎨 Color
+
+</label>
+
+
+<select id="color"
+class="w-full p-3 rounded-2xl input-box">
+
+
+<option>Black</option>
+<option>White</option>
+<option>Grey</option>
+<option>Navy</option>
+<option>Blue</option>
+<option>Light Blue</option>
+<option>Beige</option>
+<option>Brown</option>
+<option>Olive</option>
+<option>Green</option>
+<option>Yellow</option>
+<option>Orange</option>
+<option>Red</option>
+<option>Pink</option>
+<option>Purple</option>
+<option>Maroon</option>
+
+
+</select>
+
+
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+✨ Occasion
+
+</label>
+
+
+<div class="grid grid-cols-2 gap-2 text-sm">
+
+
+<label>
+<input type="checkbox" class="occasion" value="Party">
+🎉 Party
+</label>
+
+
+<label>
+<input type="checkbox" class="occasion" value="Date">
+💕 Date
+</label>
+
+
+<label>
+<input type="checkbox" class="occasion" value="Office">
+💼 Office
+</label>
+
+
+<label>
+<input type="checkbox" class="occasion" value="College">
+🎓 College
+</label>
+
+
+<label>
+<input type="checkbox" class="occasion" value="Wedding">
+💍 Wedding
+</label>
+
+
+<label>
+<input type="checkbox" class="occasion" value="Travel">
+✈ Travel
+</label>
+
+
+</div>
+
+
+
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+🌸 Season
+
+</label>
+
+
+<select id="season"
+class="w-full p-3 rounded-2xl input-box">
+
+
+<option>Summer</option>
+<option>Winter</option>
+<option>Monsoon</option>
+<option>Spring</option>
+<option>Autumn</option>
+<option>All Season</option>
+
+
+</select>
+
+
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+〰 Pattern
+
+</label>
+
+
+<select id="pattern"
+class="w-full p-3 rounded-2xl input-box">
+
+
+<option>Solid</option>
+<option>Striped</option>
+<option>Checked</option>
+<option>Floral</option>
+<option>Printed</option>
+<option>Graphic</option>
+
+
+</select>
+
+
+
+
+
+
+<label class="text-sm font-bold text-pink-500">
+
+📸 Clothing Image
+
+</label>
+
+
+<input
+
+id="image"
+
+type="file"
+
+accept="image/*"
+
+class="w-full p-3 rounded-2xl input-box">
+
+
+<img
+
+id="preview"
+
+class="hidden w-full h-60 object-contain rounded-3xl bg-white mt-3">
+
+
+<button
+
+class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold p-4 rounded-2xl">
+
+
+🌟 Save To Closet 🌟
+
+
+</button>
+
+
+</form>
+
+
+
+<p id="statusMessage"
+class="text-center mt-4 font-bold text-sm">
+</p>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- CLOSET -->
+
+
+<div class="lg:col-span-2">
+
+
+<div class="glass rounded-[3rem] p-7">
+
+
+<div class="flex justify-between items-center mb-6">
+
+
+<div>
+
+<h2 class="font-sweet text-5xl font-bold text-pink-900">
+
+My Wardrobe 🌸
+
+</h2>
+
+<p class="text-pink-500">
+
+Your digital fashion collection
+
+</p>
+
+</div>
+
+
+
+<div id="itemCount"
+
+class="bg-pink-500 text-white px-5 py-3 rounded-2xl font-bold">
+
+0 Items
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- FILTER SORT -->
+
+
+<div class="grid md:grid-cols-3 gap-3 mb-8">
+
+
+<select id="filterCategory"
+class="p-3 rounded-xl input-box">
+
+
+<option value="">All Categories</option>
+<option>Top</option>
+<option>Bottom</option>
+<option>Dress</option>
+<option>Shoes</option>
+<option>Accessory</option>
+
+
+</select>
+
+
+
+<select id="filterOccasion"
+class="p-3 rounded-xl input-box">
+
+
+<option value="">All Occasions</option>
+<option>Party</option>
+<option>Date</option>
+<option>Office</option>
+<option>College</option>
+
+
+</select>
+
+
+
+<select id="sort"
+
+class="p-3 rounded-xl input-box">
+
+
+<option value="">Sort</option>
+<option value="az">A-Z</option>
+<option value="za">Z-A</option>
+<option value="newest">Newest</option>
+<option value="oldest">Oldest</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+<!-- OUTFIT RECOMMENDATION FEATURE -->
+
+<div class="mt-10 bg-pink-50 rounded-[3rem] p-7">
+
+
+<h2 class="font-sweet text-4xl font-bold text-pink-900">
+
+💫 Curate My Outfit
+
+</h2>
+
+
+<p class="text-pink-500 mb-5">
+
+Choose an occasion and let your wardrobe style you 💕
+
+</p>
+
+
+
+<div class="flex flex-wrap gap-4">
+
+
+<select 
+id="recommendOccasion"
+
+class="p-3 rounded-xl input-box">
+
+
+<option value="Party">
+🎉 Party
+</option>
+
+
+<option value="Date">
+💕 Date
+</option>
+
+
+<option value="Office">
+💼 Office
+</option>
+
+
+<option value="College">
+🎓 College
+</option>
+
+
+<option value="Wedding">
+💍 Wedding
+</option>
+
+
+<option value="Travel">
+✈ Travel
+</option>
+
+
+</select>
+
+
+
+
+<button
+
+id="recommendBtn"
+
+class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-6 py-3 rounded-xl">
+
+
+✨ Style Me
+
+
+</button>
+
+
+</div>
+
+
+
+
+<div 
+
+id="recommendationResult"
+
+class="grid md:grid-cols-3 gap-5 mt-6">
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- EXISTING WARDROBE LIST -->
+
+
+<div id="wardrobeList"
+
+class="grid md:grid-cols-2 gap-6">
+
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+<script src="crud.js"></script>
+<script src="generateoutfit.js"></script>
+
+</body>
+
+</html>
