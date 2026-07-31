@@ -50,19 +50,25 @@ Style Compatibility (30%)
 
 The system evaluates multiple possible combinations and ranks them to provide the most suitable outfit suggestions.
 
-🛠️ Tech Stack
-Frontend
+🛠️ Tech Stack:
+
+Frontend:
 HTML
 Tailwind CSS
 JavaScript
-Backend
+
+Backend:
 Node.js
 Express.js
-Database
+
+Database:
 MongoDB
-Other Technologies
+
+Other Technologies:
 Multer for image uploads
 REST APIs
+Cloudinary
+
 Custom recommendation algorithms
 🚀 Future Enhancements
 User authentication and personalized wardrobes
