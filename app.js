@@ -29,13 +29,21 @@ app.use(
 
 
 app.get("/api/items", async (req, res) => {
+
+    
   try {
     // Get query parameters
     const { category, color, occasion, sort } = req.query;
 
+    if (!userId) {
+      return res.status(200).json([]);
+    }
+
     // Empty filter object
     let filter = {};
 
+    filter.userId = userId;
+    
     // Apply filters only if user has selected them
     if (category) {
       filter.category = category;
@@ -87,8 +95,8 @@ try{
 const newItem = new Item({
 
     ...req.body,
-
-  image: req.file ? req.file.path : "",
+ userId: req.body.userId,
+ image: req.file ? req.file.path : "",
 occasion: req.body.occasion 
 ? JSON.parse(req.body.occasion)
 : [],

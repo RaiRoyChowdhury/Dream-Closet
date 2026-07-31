@@ -1,6 +1,17 @@
 const API_URL = "https://dream-closet-cd49.onrender.com/api/items";
 const IMAGE_URL = "https://dream-closet-cd49.onrender.com/db/uploads/";
 
+// USER ID LOGIC (Device Isolation)
+function getUserId() {
+    let userId = localStorage.getItem("user_id");
+    if (!userId) {
+        userId = "user_" + Math.random().toString(36).substring(2, 9) + Date.now();
+        localStorage.setItem("user_id", userId);
+    }
+    return userId;
+}
+
+const CURRENT_USER_ID = getUserId();
 
 // ELEMENTS
 
@@ -16,113 +27,55 @@ const imageInput = document.getElementById("image");
 
 const preview = document.getElementById("preview");
 
+const filterCategory = document.getElementById("filterCategory");
 
-const filterCategory =
-document.getElementById("filterCategory");
+const filterOccasion = document.getElementById("filterOccasion");
 
-const filterOccasion =
-document.getElementById("filterOccasion");
-
-const sort =
-document.getElementById("sort");
-
-
-
-
+const sort = document.getElementById("sort");
 
 // IMAGE PREVIEW FOR ADD FORM
 
-imageInput.addEventListener("change",()=>{
+imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
 
-    const file=imageInput.files[0];
-
-
-    if(file){
-
-        preview.src =
-        URL.createObjectURL(file);
-
+    if (file) {
+        preview.src = URL.createObjectURL(file);
         preview.classList.remove("hidden");
-
     }
-
 });
 
+// FETCH ITEMS (With userId filtering)
 
+async function fetchItems(query = "") {
+    try {
+        // Build URL parameters safely
+        const separator = query.includes("?") ? "&" : "?";
+        const fullUrl = `${API_URL}${query}${separator}userId=${CURRENT_USER_ID}`;
 
+        const res = await fetch(fullUrl);
+        const items = await res.json();
 
-
-
-
-// FETCH ITEMS
-
-async function fetchItems(query=""){
-
-
-    try{
-
-
-        const res =
-        await fetch(`${API_URL}${query}`);
-
-
-        const items =
-        await res.json();
-
-
-
-        itemCount.innerHTML =
-        `${items.length} Items 🛍️`;
-
-
+        itemCount.innerHTML = `${items.length} Items 🛍️`;
 
         renderItems(items);
-
-
-    }
-
-
-    catch(err){
-
-
+    } catch (err) {
         console.log(err);
 
-
-        wardrobeList.innerHTML =
-        `
+        wardrobeList.innerHTML = `
         <p class="text-red-500">
         Server connection failed
         </p>
         `;
-
-
     }
-
-
 }
-
-
-
-
-
-
-
-
 
 // RENDER CARDS
 
-function renderItems(items){
+function renderItems(items) {
+    wardrobeList.innerHTML = "";
 
-
-    wardrobeList.innerHTML="";
-
-
-
-    if(items.length===0){
-
-
-        wardrobeList.innerHTML=
-        `
+    if (items.length === 0) {
+        wardrobeList.innerHTML = `
         <div class="text-center text-pink-400 col-span-2">
 
         ✨ Your closet is empty
@@ -130,27 +83,13 @@ function renderItems(items){
         </div>
         `;
 
-
         return;
-
-
     }
 
+    items.forEach((item) => {
+        const card = document.createElement("div");
 
-
-
-
-
-    items.forEach(item=>{
-
-
-        const card =
-        document.createElement("div");
-
-
-
-        card.className =
-        `
+        card.className = `
         card
         glass
         rounded-[2rem]
@@ -160,51 +99,37 @@ function renderItems(items){
         gap-4
         `;
 
+        card.id = `card-${item._id}`;
 
-
-        card.id =
-        `card-${item._id}`;
-
-
-
-        card.innerHTML =
-
-        `
+        card.innerHTML = `
 
         <div class="w-full h-72 bg-white rounded-3xl overflow-hidden">
 
 
         ${
             item.image
-
-            ?
-
-            `
+                ? `
             <img
-           src="${
-item.image
-? item.image.replace(/\\/g, "/").startsWith("http")
-    ? item.image.replace(/\\/g, "/")
-    : item.image.replace(/\\/g, "/").startsWith("db/uploads/")
-    ? "https://dream-closet-cd49.onrender.com/" + item.image.replace(/\\/g, "/")
-    : item.image.replace(/\\/g, "/").startsWith("/uploads/")
-    ? "https://dream-closet-cd49.onrender.com" + item.image.replace(/\\/g, "/")
-    : item.image.replace(/\\/g, "/").startsWith("uploads/")
-    ? "https://dream-closet-cd49.onrender.com/" + item.image.replace(/\\/g, "/")
-    : IMAGE_URL + item.image.replace(/\\/g, "/")
-: ""
-}"
+            src="${
+                item.image
+                    ? item.image.replace(/\\/g, "/").startsWith("http")
+                        ? item.image.replace(/\\/g, "/")
+                        : item.image.replace(/\\/g, "/").startsWith("db/uploads/")
+                        ? "https://dream-closet-cd49.onrender.com/" + item.image.replace(/\\/g, "/")
+                        : item.image.replace(/\\/g, "/").startsWith("/uploads/")
+                        ? "https://dream-closet-cd49.onrender.com" + item.image.replace(/\\/g, "/")
+                        : item.image.replace(/\\/g, "/").startsWith("uploads/")
+                        ? "https://dream-closet-cd49.onrender.com/" + item.image.replace(/\\/g, "/")
+                        : IMAGE_URL + item.image.replace(/\\/g, "/")
+                    : ""
+            }"
             class="w-full h-full object-contain">
             `
-
-            :
-
-            `
+                : `
             <div class="h-full flex items-center justify-center">
             No Image
             </div>
             `
-
         }
 
 
@@ -311,229 +236,99 @@ item.image
 
         `;
 
-
-
         wardrobeList.appendChild(card);
+    });
+}
 
+// ADD NEW ITEM (POST - Attaches userId)
 
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    // Attach userId to form payload
+    formData.append("userId", CURRENT_USER_ID);
+
+    formData.append("name", document.getElementById("name").value);
+
+    formData.append("category", document.getElementById("category").value);
+
+    formData.append("color", document.getElementById("color").value);
+
+    formData.append("pattern", document.getElementById("pattern").value);
+
+    formData.append("season", JSON.stringify([document.getElementById("season").value]));
+
+    const occasions = [];
+
+    document.querySelectorAll(".occasion:checked").forEach((box) => {
+        occasions.push(box.value);
     });
 
+    formData.append("occasion", JSON.stringify(occasions));
 
-}
-// ADD NEW ITEM (POST)
+    const image = imageInput.files[0];
 
-form.addEventListener(
-"submit",
-async(e)=>{
+    if (!image) {
+        statusMessage.innerHTML = "📸 Please upload an image";
 
+        return;
+    }
 
-e.preventDefault();
+    formData.append("image", image);
 
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: formData
+        });
 
+        const data = await res.json();
 
-const formData = new FormData();
+        if (res.ok) {
+            statusMessage.innerHTML = "Saved successfully ❤️";
 
+            statusMessage.className = "text-green-500 text-center mt-4";
 
+            form.reset();
 
-formData.append(
-"name",
-document.getElementById("name").value
-);
+            preview.classList.add("hidden");
 
-
-
-formData.append(
-"category",
-document.getElementById("category").value
-);
-
-
-
-formData.append(
-"color",
-document.getElementById("color").value
-);
-
-
-
-formData.append(
-"pattern",
-document.getElementById("pattern").value
-);
-
-
-
-
-formData.append(
-"season",
-JSON.stringify([
-
-document.getElementById("season").value
-
-])
-);
-
-
-
-
-
-const occasions=[];
-
-
-document
-.querySelectorAll(".occasion:checked")
-.forEach(box=>{
-
-    occasions.push(box.value);
-
+            applyFilters();
+        } else {
+            console.log(data);
+        }
+    } catch (err) {
+        console.log(err);
+    }
 });
 
-
-
-formData.append(
-"occasion",
-JSON.stringify(occasions)
-);
-
-
-
-
-
-const image =
-imageInput.files[0];
-
-
-
-if(!image){
-
-    statusMessage.innerHTML =
-    "📸 Please upload an image";
-
-
-    return;
-
-}
-
-
-
-formData.append(
-"image",
-image
-);
-
-
-
-
-
-try{
-
-
-const res =
-await fetch(
-
-API_URL,
-
-{
-
-method:"POST",
-
-body:formData
-
-}
-
-);
-
-
-
-
-const data =
-await res.json();
-
-
-
-
-if(res.ok){
-
-
-    statusMessage.innerHTML =
-    "Saved successfully ❤️";
-
-
-    statusMessage.className =
-    "text-green-500 text-center mt-4";
-
-
-    form.reset();
-
-
-    preview.classList.add("hidden");
-
-
-    fetchItems();
-
-
-}
-
-
-
-else{
-
-
-    console.log(data);
-
-
-}
-
-
-
-}
-
-
-
-catch(err){
-
-console.log(err);
-
-}
-
-
-
-});
 // OPEN INLINE EDIT MODE
 
-function openEditCard(id){
-
-
+function openEditCard(id) {
     fetch(`${API_URL}/${id}`)
-    .then(res=>res.json())
-    .then(item=>{
+        .then((res) => res.json())
+        .then((item) => {
+            const card = document.getElementById(`card-${id}`);
 
-
-        const card =
-        document.getElementById(`card-${id}`);
-
-
-
-        card.innerHTML = `
+            card.innerHTML = `
 
 
         <div class="w-full h-48 bg-white rounded-3xl overflow-hidden">
 
         ${
-    item.image
-
-    ?
-
-    `
+            item.image
+                ? `
     <img
     src="${
         item.image.startsWith("http")
-        ? item.image
-        : item.image.startsWith("/uploads/")
-        ? "https://dream-closet-cd49.onrender.com" + item.image
-        : item.image.startsWith("uploads/")
-        ? "https://dream-closet-cd49.onrender.com/" + item.image
-        : IMAGE_URL + item.image
+            ? item.image
+            : item.image.startsWith("/uploads/")
+            ? "https://dream-closet-cd49.onrender.com" + item.image
+            : item.image.startsWith("uploads/")
+            ? "https://dream-closet-cd49.onrender.com/" + item.image
+            : IMAGE_URL + item.image
     }"
     class="w-full h-full object-contain"
     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -546,16 +341,12 @@ function openEditCard(id){
 
     </div>
     `
-
-    :
-
-    `
+                : `
     <div class="h-full flex items-center justify-center text-pink-300">
     No Image
     </div>
     `
-
-}
+        }
 
         </div>
 
@@ -590,31 +381,31 @@ function openEditCard(id){
         rounded-xl
         input-box">
 
-        <option ${item.category==="Top"?"selected":""}>
+        <option ${item.category === "Top" ? "selected" : ""}>
         Top
         </option>
 
-        <option ${item.category==="Bottom"?"selected":""}>
+        <option ${item.category === "Bottom" ? "selected" : ""}>
         Bottom
         </option>
 
 
-        <option ${item.category==="Dress"?"selected":""}>
+        <option ${item.category === "Dress" ? "selected" : ""}>
         Dress
         </option>
 
 
-        <option ${item.category==="Outerwear"?"selected":""}>
+        <option ${item.category === "Outerwear" ? "selected" : ""}>
         Outerwear
         </option>
 
 
-        <option ${item.category==="Shoes"?"selected":""}>
+        <option ${item.category === "Shoes" ? "selected" : ""}>
         Shoes
         </option>
 
 
-        <option ${item.category==="Accessory"?"selected":""}>
+        <option ${item.category === "Accessory" ? "selected" : ""}>
         Accessory
         </option>
 
@@ -638,23 +429,23 @@ function openEditCard(id){
         input-box">
 
         
-        <option ${item.color==="Black"?"selected":""}>
+        <option ${item.color === "Black" ? "selected" : ""}>
         Black
         </option>
 
-        <option ${item.color==="White"?"selected":""}>
+        <option ${item.color === "White" ? "selected" : ""}>
         White
         </option>
 
-        <option ${item.color==="Blue"?"selected":""}>
+        <option ${item.color === "Blue" ? "selected" : ""}>
         Blue
         </option>
 
-        <option ${item.color==="Pink"?"selected":""}>
+        <option ${item.color === "Pink" ? "selected" : ""}>
         Pink
         </option>
 
-        <option ${item.color==="Red"?"selected":""}>
+        <option ${item.color === "Red" ? "selected" : ""}>
         Red
         </option>
 
@@ -668,12 +459,11 @@ function openEditCard(id){
         <div class="grid grid-cols-2 gap-2 text-sm">
 
 
-        ${
-        ["Party","Date","Office","College","Wedding","Travel"]
-        .map(place=>
+        ${["Party", "Date", "Office", "College", "Wedding", "Travel"]
+            .map(
+                (place) =>
 
-
-        `
+                    `
 
         <label>
 
@@ -685,7 +475,7 @@ function openEditCard(id){
 
         value="${place}"
 
-        ${item.occasion?.includes(place)?"checked":""}
+        ${item.occasion?.includes(place) ? "checked" : ""}
 
         >
 
@@ -695,10 +485,8 @@ function openEditCard(id){
 
 
         `
-
-        ).join("")
-
-        }
+            )
+            .join("")}
 
 
         </div>
@@ -720,15 +508,15 @@ function openEditCard(id){
         input-box">
 
 
-        ${
-        ["Summer","Winter","Monsoon","Spring","Autumn","All Season"]
-        .map(season=>
+        ${["Summer", "Winter", "Monsoon", "Spring", "Autumn", "All Season"]
+            .map(
+                (season) =>
 
-        `
+                    `
 
         <option
 
-        ${item.season?.[0]===season?"selected":""}
+        ${item.season?.[0] === season ? "selected" : ""}
 
         >
 
@@ -737,10 +525,8 @@ function openEditCard(id){
         </option>
 
         `
-
-        ).join("")
-
-        }
+            )
+            .join("")}
 
 
         </select>
@@ -761,15 +547,15 @@ function openEditCard(id){
         input-box">
 
 
-        ${
-        ["Solid","Striped","Checked","Floral","Printed","Graphic"]
-        .map(pattern=>
+        ${["Solid", "Striped", "Checked", "Floral", "Printed", "Graphic"]
+            .map(
+                (pattern) =>
 
-        `
+                    `
 
         <option
 
-        ${item.pattern===pattern?"selected":""}
+        ${item.pattern === pattern ? "selected" : ""}
 
         >
 
@@ -778,10 +564,8 @@ function openEditCard(id){
         </option>
 
         `
-
-        ).join("")
-
-        }
+            )
+            .join("")}
 
 
         </select>
@@ -840,7 +624,7 @@ function openEditCard(id){
 
         <button
 
-        onclick="fetchItems()"
+        onclick="applyFilters()"
 
         class="
         flex-1
@@ -862,340 +646,99 @@ function openEditCard(id){
 
 
         `;
-
-
-
-    });
-
-
+        });
 }
-
-
-
-
-
 
 // SAVE INLINE EDIT
 
-async function saveEdit(id){
+async function saveEdit(id) {
+    const formData = new FormData();
 
+    formData.append("name", document.getElementById(`edit-name-${id}`).value);
 
-    const formData =
-    new FormData();
+    formData.append("category", document.getElementById(`edit-category-${id}`).value);
 
+    formData.append("color", document.getElementById(`edit-color-${id}`).value);
 
+    formData.append("pattern", document.getElementById(`edit-pattern-${id}`).value);
 
-    formData.append(
+    formData.append("season", JSON.stringify([document.getElementById(`edit-season-${id}`).value]));
 
-    "name",
+    const occasions = [];
 
-    document.getElementById(`edit-name-${id}`).value
-
-    );
-
-
-
-
-    formData.append(
-
-    "category",
-
-    document.getElementById(`edit-category-${id}`).value
-
-    );
-
-
-
-
-
-    formData.append(
-
-    "color",
-
-    document.getElementById(`edit-color-${id}`).value
-
-    );
-
-
-
-
-
-    formData.append(
-
-    "pattern",
-
-    document.getElementById(`edit-pattern-${id}`).value
-
-    );
-
-
-
-
-
-    formData.append(
-
-    "season",
-
-    JSON.stringify([
-
-    document.getElementById(`edit-season-${id}`).value
-
-    ])
-
-    );
-
-
-
-
-
-    const occasions=[];
-
-
-
-    document
-
-    .querySelectorAll(`.edit-occasion-${id}:checked`)
-
-    .forEach(box=>{
-
+    document.querySelectorAll(`.edit-occasion-${id}:checked`).forEach((box) => {
         occasions.push(box.value);
-
     });
 
+    formData.append("occasion", JSON.stringify(occasions));
 
+    const image = document.getElementById(`edit-image-${id}`).files[0];
 
-
-
-    formData.append(
-
-    "occasion",
-
-    JSON.stringify(occasions)
-
-    );
-
-
-
-
-
-    const image =
-
-    document.getElementById(`edit-image-${id}`).files[0];
-
-
-
-    if(image){
-
-        formData.append(
-            "image",
-            image
-        );
-
+    if (image) {
+        formData.append("image", image);
     }
 
+    try {
+        const res = await fetch(`${API_URL}/${id}`, {
+            method: "PATCH",
+            body: formData
+        });
 
-
-
-
-
-    try{
-
-
-        const res =
-        await fetch(
-
-        `${API_URL}/${id}`,
-
-        {
-
-        method:"PATCH",
-
-        body:formData
-
+        if (res.ok) {
+            applyFilters();
         }
-
-        );
-
-
-
-        if(res.ok){
-
-            fetchItems();
-
-        }
-
-
-    }
-
-
-    catch(err){
-
+    } catch (err) {
         console.log(err);
-
     }
-
-
 }
 
 // DELETE ITEM
 
-async function deleteItem(id){
+async function deleteItem(id) {
+    const confirmDelete = confirm("Delete this item?");
 
-    const confirmDelete =
-    confirm("Delete this item?");
+    if (!confirmDelete) return;
 
+    try {
+        const res = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        });
 
-    if(!confirmDelete)
-    return;
-
-
-
-    try{
-
-
-        const res =
-        await fetch(
-
-        `${API_URL}/${id}`,
-
-        {
-
-        method:"DELETE"
-
+        if (res.ok) {
+            applyFilters();
         }
-
-        );
-
-
-
-        if(res.ok){
-
-            fetchItems();
-
-        }
-
-
-    }
-
-
-    catch(err){
-
+    } catch (err) {
         console.log(err);
-
     }
-
-
 }
-
-
-
-
-
-
-
 
 // FILTER + SORT
 
-function applyFilters(){
+function applyFilters() {
+    const params = new URLSearchParams();
 
-
-    const params =
-    new URLSearchParams();
-
-
-
-    if(filterCategory.value){
-
-        params.append(
-            "category",
-            filterCategory.value
-        );
-
+    if (filterCategory.value) {
+        params.append("category", filterCategory.value);
     }
 
-
-
-
-
-    if(filterOccasion.value){
-
-        params.append(
-            "occasion",
-            filterOccasion.value
-        );
-
+    if (filterOccasion.value) {
+        params.append("occasion", filterOccasion.value);
     }
 
-
-
-
-
-    if(sort.value){
-
-        params.append(
-            "sort",
-            sort.value
-        );
-
+    if (sort.value) {
+        params.append("sort", sort.value);
     }
 
-
-
-
-
-
-    const query =
-
-    params.toString()
-
-    ?
-
-    `?${params.toString()}`
-
-    :
-
-    "";
-
-
-
+    const query = params.toString() ? `?${params.toString()}` : "";
 
     fetchItems(query);
-
-
-
 }
 
+filterCategory.addEventListener("change", applyFilters);
 
+filterOccasion.addEventListener("change", applyFilters);
 
-
-
-
-filterCategory.addEventListener(
-"change",
-applyFilters
-);
-
-
-
-filterOccasion.addEventListener(
-"change",
-applyFilters
-);
-
-
-
-sort.addEventListener(
-"change",
-applyFilters
-);
-
-
-
-
-
-
-
-
+sort.addEventListener("change", applyFilters);
 
 // MAKE INLINE FUNCTIONS AVAILABLE TO HTML BUTTONS
 
@@ -1205,14 +748,6 @@ window.saveEdit = saveEdit;
 
 window.deleteItem = deleteItem;
 
-
-
-
-
-
-
-
-
 // INITIAL LOAD
 
-fetchItems();
+applyFilters();
