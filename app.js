@@ -33,7 +33,7 @@ app.get("/api/items", async (req, res) => {
     
   try {
     // Get query parameters
-    const { category, color, occasion, sort } = req.query;
+    const { category, color, occasion, sort , userId } = req.query;
 
     if (!userId) {
       return res.status(200).json([]);
@@ -43,7 +43,7 @@ app.get("/api/items", async (req, res) => {
     let filter = {};
 
     filter.userId = userId;
-    
+
     // Apply filters only if user has selected them
     if (category) {
       filter.category = category;
