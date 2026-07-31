@@ -1,3 +1,4 @@
+const path = require('path'); // Added for path handling
 console.log(__dirname);
 require('dotenv').config();
 const express = require('express');
@@ -15,6 +16,12 @@ const upload = require("./db/uploads/middleware/upload.js");
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+// 1. SERVE UPLOADED IMAGES
+app.use("/db/uploads", express.static(path.join(__dirname, "db/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// 2. SERVE STATIC FRONTEND FILES (index.html, script2.js, CSS)
+app.use(express.static(__dirname));
 app.use(
     "/recommendation",
     recommendationRoutes
@@ -211,6 +218,10 @@ app.delete('/api/items/:id', async (req, res) => {
 
                                                    
 console.log("--- APP.JS HAS LOADED ROUTES ---");
+// 3. CATCH-ALL ROUTE TO SERVE INDEX.HTML AT ROOT "/"
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 module.exports = app;
 
  
