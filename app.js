@@ -27,26 +27,6 @@ app.use(
     recommendationRoutes
 );
 
-// 🧹 TEMPORARY ROUTE: Wipe old data (Run this once, then delete the code!)
-app.get("/api/wipe-old-data", async (req, res) => {
-  try {
-    // Deletes items where userId doesn't exist, is null, or is an empty string
-    const result = await Item.deleteMany({
-      $or: [
-        { userId: { $exists: false } },
-        { userId: null },
-        { userId: "" }
-      ]
-    });
-    
-    res.status(200).json({ 
-      message: "Success! Old data wiped clean.", 
-      itemsDeleted: result.deletedCount 
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
 
 app.get("/api/items", async (req, res) => {
