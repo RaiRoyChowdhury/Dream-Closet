@@ -5,146 +5,81 @@ const occasionSelect = document.getElementById("recommendOccasion");
 
 const outfitResult = document.getElementById("recommendationResult");
 
-
-
-if(recommendBtn){
-
-
-recommendBtn.addEventListener(
-"click",
-async()=>{
-
-
+if (recommendBtn) {
+  recommendBtn.addEventListener("click", async () => {
     const occasion = occasionSelect.value;
 
+    // 🔒 1. Retrieve the current user's ID (adjust key name if stored differently, e.g. localStorage.getItem("userId"))
+    const userId = localStorage.getItem("userId") || "YOUR_USER_ID_HERE";
 
-
-    try{
-
-
-        const response = await fetch(
-        `https://dream-closet-cd49.onrender.com/recommendation/${occasion}`
-        );
-
+    try {
+      // 🔒 2. Update URL to hit the dedicated curation endpoint with userId and occasion query parameters
+      const response = await fetch(
+        `https://dream-closet-cd49.onrender.com/api/items/curate?userId=${userId}&occasion=${occasion}`
+      );
 
       let outfits = await response.json();
 
-console.log("JSON received:", outfits);
+      console.log("JSON received:", outfits);
 
-if(outfits.outfits){
-    outfits = outfits.outfits;
-}
-       
+      if (outfits.outfits) {
+        outfits = outfits.outfits;
+      }
 
-console.log("JSON received:", outfits);
+      console.log("JSON received:", outfits);
 
-try {
-    displayOutfits(outfits);
-}
-catch(err){
-    console.log("Display error:", err);
-}
+      try {
+        displayOutfits(outfits);
+      } catch (err) {
+        console.log("Display error:", err);
+      }
+    } catch (error) {
+      console.log(error);
 
-
-    }
-
-
-    catch(error){
-
-
-        console.log(error);
-
-
-        outfitResult.innerHTML =
-        `
+      outfitResult.innerHTML = `
         <p class="text-red-500 font-bold">
         Unable to generate outfit 😢
         </p>
         `;
-
-
     }
-
-
-
-});
-
-
+  });
 }
 
-
-
-
-
-
-function displayOutfits(outfits){
-
-
-
-    if(!outfits || outfits.length === 0){
-
-
-        outfitResult.innerHTML =
-        `
+function displayOutfits(outfits) {
+  if (!outfits || outfits.length === 0) {
+    outfitResult.innerHTML = `
         <h3 class="text-pink-700 font-bold">
         No matching outfit found 😢
         </h3>
         `;
 
+    return;
+  }
 
-        return;
+  outfitResult.innerHTML = "";
 
+  outfits.forEach((item, index) => {
+    const outfit = item.outfit;
 
-    }
+    const card = document.createElement("div");
 
+    card.className = "outfit-card bg-white p-5 rounded-3xl shadow-lg";
 
-
-    outfitResult.innerHTML = "";
-
-
-
-
-
-    outfits.forEach((item,index)=>{
-
-
-        const outfit = item.outfit;
-
-
-
-        const card = document.createElement("div");
-
-
-        card.className =
-        "outfit-card bg-white p-5 rounded-3xl shadow-lg";
-
-
-
-
-
-        card.innerHTML =
-
-        `
+    card.innerHTML = `
 
         <h3 class="text-xl font-bold text-pink-900 mb-4">
 
-        🏆 Outfit ${index+1}
+        🏆 Outfit ${index + 1}
 
         </h3>
 
-
-
-
         <div class="space-y-3">
-
-
 
         <div>
 
         <img 
         src="${getImage(outfit.top.image)}"
         class="w-32 h-32 object-cover rounded-2xl mx-auto">
-
 
         <p class="font-bold text-center">
 
@@ -154,16 +89,11 @@ function displayOutfits(outfits){
 
         </div>
 
-
-
-
-
         <div>
 
         <img 
         src="${getImage(outfit.bottom.image)}"
         class="w-32 h-32 object-cover rounded-2xl mx-auto">
-
 
         <p class="font-bold text-center">
 
@@ -173,16 +103,11 @@ function displayOutfits(outfits){
 
         </div>
 
-
-
-
-
         <div>
 
         <img 
         src="${getImage(outfit.shoe.image)}"
         class="w-32 h-32 object-cover rounded-2xl mx-auto">
-
 
         <p class="font-bold text-center">
 
@@ -192,14 +117,7 @@ function displayOutfits(outfits){
 
         </div>
 
-
-
-
         </div>
-
-
-
-
 
         <h3 class="text-center mt-5 text-pink-600 font-bold">
 
@@ -208,52 +126,34 @@ function displayOutfits(outfits){
 
         </h3>
 
-
         `;
 
-
-
-
-        outfitResult.appendChild(card);
-
-
-
-    });
-
-
-
+    outfitResult.appendChild(card);
+  });
 }
 
+function getImage(image) {
+  if (!image) {
+    return "";
+  }
 
+  image = image.replace(/\\/g, "/");
 
+  if (image.startsWith("http")) {
+    return image;
+  }
 
+  if (image.startsWith("db/uploads/")) {
+    return "https://dream-closet-cd49.onrender.com/" + image;
+  }
 
+  if (image.startsWith("uploads/")) {
+    return "https://dream-closet-cd49.onrender.com/" + image;
+  }
 
+  if (image.startsWith("/uploads/")) {
+    return "https://dream-closet-cd49.onrender.com" + image;
+  }
 
-function getImage(image){
-
-    if(!image){
-        return "";
-    }
-
-    image = image.replace(/\\/g, "/");
-
-    if(image.startsWith("http")){
-        return image;
-    }
-
-    if(image.startsWith("db/uploads/")){
-        return "https://dream-closet-cd49.onrender.com/" + image;
-    }
-
-    if(image.startsWith("uploads/")){
-        return "https://dream-closet-cd49.onrender.com/" + image;
-    }
-
-    if(image.startsWith("/uploads/")){
-        return "https://dream-closet-cd49.onrender.com" + image;
-    }
-
-    return "https://dream-closet-cd49.onrender.com/db/uploads/" + image;
-
+  return "https://dream-closet-cd49.onrender.com/db/uploads/" + image;
 }

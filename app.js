@@ -29,53 +29,22 @@ app.use(
 
 
 
-app.get("/api/items", async (req, res) => {
-
-    
+// GET /api/items/curate - Lightweight endpoint exclusively for the "Style Me" engine
+app.get("/api/items/curate", async (req, res) => {
   try {
-    // Get query parameters
-    const { category, color, occasion, sort , userId } = req.query;
+    const { userId } = req.query;
 
     if (!userId) {
       return res.status(200).json([]);
     }
 
-    // Empty filter object
-    let filter = {};
+    // Fetch ONLY finalized items for this specific user
+    const readyItems = await Item.find({
+      userId: userId,
+      isFinalized: true // 🔒 Excludes raw/temp uploads from curation
+    });
 
-    filter.userId = userId;
-
-    // Apply filters only if user has selected them
-    if (category) {
-      filter.category = category;
-    }
-
-    if (color) {
-      filter.color = color;
-    }
-
-    if (occasion) {
-      filter.occasion = occasion;
-    }
-
-    // Create query
-    let query = Item.find(filter);
-
-    // Sorting
-    if (sort === "az") {
-      query = query.sort({ name: 1 }); // A-Z
-    } else if (sort === "za") {
-      query = query.sort({ name: -1 }); // Z-A
-    } else if (sort === "newest") {
-      query = query.sort({ createdAt: -1 }); // Newest first
-    } else if (sort === "oldest") {
-      query = query.sort({ createdAt: 1 }); // Oldest first
-    }
-
-    // Execute query
-    const items = await query;
-
-    res.status(200).json(items);
+    res.status(200).json(readyItems);
 
   } catch (err) {
     res.status(500).json({
@@ -83,7 +52,6 @@ app.get("/api/items", async (req, res) => {
     });
   }
 });
-
 // --- module.exports = app; should be below this ---
 
 app.post('/api/items', upload.single("image"), async(req,res)=>{
