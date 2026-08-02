@@ -3,15 +3,15 @@ const IMAGE_URL = "https://dream-closet-cd49.onrender.com/db/uploads/";
 
 // USER ID LOGIC (Device Isolation)
 function getUserId() {
-    let userId = localStorage.getItem("user_id");
+    let userId = localStorage.getItem("userId");
     if (!userId) {
         userId = "user_" + Math.random().toString(36).substring(2, 9) + Date.now();
-        localStorage.setItem("user_id", userId);
+        localStorage.setItem("userId", userId);
     }
     return userId;
 }
 
-const CURRENT_USER_ID = getUserId();
+const CURRENT_userId = getUserId();
 
 // ELEMENTS
 
@@ -50,7 +50,7 @@ async function fetchItems(query = "") {
     try {
         // Build URL parameters safely
         const separator = query.includes("?") ? "&" : "?";
-        const fullUrl = `${API_URL}${query}${separator}userId=${CURRENT_USER_ID}`;
+        const fullUrl = `${API_URL}${query}${separator}userId=${CURRENT_userId}`;
 
         const res = await fetch(fullUrl);
         const items = await res.json();
@@ -248,7 +248,7 @@ form.addEventListener("submit", async (e) => {
     const formData = new FormData();
 
     // Attach userId to form payload
-    formData.append("userId", CURRENT_USER_ID);
+    formData.append("userId", CURRENT_userId);
 
     formData.append("name", document.getElementById("name").value);
 

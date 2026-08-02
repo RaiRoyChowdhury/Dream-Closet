@@ -1,23 +1,40 @@
 console.log("Recommendation JS loaded");
-const recommendBtn = document.getElementById("recommendBtn");
-console.log(recommendBtn);
-const occasionSelect = document.getElementById("recommendOccasion");
 
+const recommendBtn = document.getElementById("recommendBtn");
+const occasionSelect = document.getElementById("recommendOccasion");
 const outfitResult = document.getElementById("recommendationResult");
+
+// Clear initial state on page load so no error message shows up prematurely
+if (outfitResult) {
+  outfitResult.innerHTML = "";
+}
 
 if (recommendBtn) {
   recommendBtn.addEventListener("click", async () => {
-    const occasion = occasionSelect.value;
+    const occasion = occasionSelect ? occasionSelect.value : "casual";
 
-    // 🔒 Retrieve current user ID
+    // 🔒 Synchronized: Reading updated "userId" key from localStorage
     const userId = localStorage.getItem("userId") || "";
 
+    // Show loading indicator when user clicks
+    if (outfitResult) {
+      outfitResult.innerHTML = `
+        <p class="text-pink-600 font-bold text-center animate-pulse">
+          Curating outfits for you... ✨
+        </p>
+      `;
+    }
+
     try {
-      // 🔒 Fetch recommendation with userId and cache-busting parameter
+      // Fetch recommendations passing userId and cache-busting timestamp
       const response = await fetch(
         `https://dream-closet-cd49.onrender.com/recommendation/${occasion}?userId=${userId}&_t=${Date.now()}`,
         { cache: "no-store" }
       );
+
+      if (!response.ok) {
+        throw new Error(`Server returned status: ${response.status}`);
+      }
 
       let outfits = await response.json();
 
@@ -27,107 +44,84 @@ if (recommendBtn) {
         outfits = outfits.outfits;
       }
 
-      console.log("JSON received:", outfits);
+      console.log("Final outfits array to display:", outfits);
 
-      try {
-        displayOutfits(outfits);
-      } catch (err) {
-        console.log("Display error:", err);
-      }
+      displayOutfits(outfits);
     } catch (error) {
-      console.log(error);
+      console.error("Fetch error:", error);
 
-      outfitResult.innerHTML = `
-        <p class="text-red-500 font-bold">
-        Unable to generate outfit 😢
-        </p>
+      if (outfitResult) {
+        outfitResult.innerHTML = `
+          <p class="text-red-500 font-bold text-center">
+            Unable to generate outfit 😢
+          </p>
         `;
+      }
     }
   });
 }
 
 function displayOutfits(outfits) {
-  if (!outfits || outfits.length === 0) {
-    outfitResult.innerHTML = `
-        <h3 class="text-pink-700 font-bold">
-        No matching outfit found 😢
-        </h3>
-        `;
+  if (!outfitResult) return;
 
+  if (!outfits || !Array.isArray(outfits) || outfits.length === 0) {
+    outfitResult.innerHTML = `
+      <h3 class="text-pink-700 font-bold text-center">
+        No matching outfit found 😢
+      </h3>
+    `;
     return;
   }
 
   outfitResult.innerHTML = "";
 
   outfits.forEach((item, index) => {
-    const outfit = item.outfit;
+    const outfit = item.outfit || item;
+
+    const top = outfit.top || {};
+    const bottom = outfit.bottom || {};
+    const shoe = outfit.shoe || {};
+
+    const topImg = getImage(top.image);
+    const topName = top.name || "Top";
+
+    const bottomImg = getImage(bottom.image);
+    const bottomName = bottom.name || "Bottom";
+
+    const shoeImg = getImage(shoe.image);
+    const shoeName = shoe.name || "Shoes";
+
+    const score = item.score !== undefined ? item.score : 100;
 
     const card = document.createElement("div");
-
-    card.className = "outfit-card bg-white p-5 rounded-3xl shadow-lg";
+    card.className = "outfit-card bg-white p-5 rounded-3xl shadow-lg mb-4";
 
     card.innerHTML = `
-
-        <h3 class="text-xl font-bold text-pink-900 mb-4">
-
+      <h3 class="text-xl font-bold text-pink-900 mb-4 text-center">
         🏆 Outfit ${index + 1}
+      </h3>
 
-        </h3>
-
-        <div class="space-y-3">
-
+      <div class="space-y-3">
         <div>
-
-        <img 
-        src="${getImage(outfit.top.image)}"
-        class="w-32 h-32 object-cover rounded-2xl mx-auto">
-
-        <p class="font-bold text-center">
-
-        👕 ${outfit.top.name}
-
-        </p>
-
+          ${topImg ? `<img src="${topImg}" class="w-32 h-32 object-cover rounded-2xl mx-auto">` : ""}
+          <p class="font-bold text-center">👕 ${topName}</p>
         </div>
 
         <div>
-
-        <img 
-        src="${getImage(outfit.bottom.image)}"
-        class="w-32 h-32 object-cover rounded-2xl mx-auto">
-
-        <p class="font-bold text-center">
-
-        👖 ${outfit.bottom.name}
-
-        </p>
-
+          ${bottomImg ? `<img src="${bottomImg}" class="w-32 h-32 object-cover rounded-2xl mx-auto">` : ""}
+          <p class="font-bold text-center">👖 ${bottomName}</p>
         </div>
 
         <div>
-
-        <img 
-        src="${getImage(outfit.shoe.image)}"
-        class="w-32 h-32 object-cover rounded-2xl mx-auto">
-
-        <p class="font-bold text-center">
-
-        👟 ${outfit.shoe.name}
-
-        </p>
-
+          ${shoeImg ? `<img src="${shoeImg}" class="w-32 h-32 object-cover rounded-2xl mx-auto">` : ""}
+          <p class="font-bold text-center">👟 ${shoeName}</p>
         </div>
+      </div>
 
-        </div>
-
-        <h3 class="text-center mt-5 text-pink-600 font-bold">
-
-        ✨ Style Score:
-        ${item.score}/100
-
-        </h3>
-
-        `;
+      <h3 class="text-center mt-5 text-pink-600 font-bold">
+        ✨ Style Score: ${score}/100
+      </h3>
+    `;
 
     outfitResult.appendChild(card);
   });
