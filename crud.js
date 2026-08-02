@@ -51,22 +51,41 @@ async function fetchItems(query = "") {
         // Build URL parameters safely
         const separator = query.includes("?") ? "&" : "?";
         const fullUrl = `${API_URL}${query}${separator}userId=${CURRENT_userId}`;
+        console.log("Fetching items from:", fullUrl);
 
         const res = await fetch(fullUrl);
-        const items = await res.json();
-
-        itemCount.innerHTML = `${items.length} Items 🛍️`;
-
-        renderItems(items);
-    } catch (err) {
-        console.log(err);
-
-        wardrobeList.innerHTML = `
-        <p class="text-red-500">
-        Server connection failed
-        </p>
-        `;
+        // 1. Check HTTP Status
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`Server error (HTTP ${res.status}):`, errorText);
+      throw new Error(`Server returned HTTP status ${res.status}`);
     }
+
+    // 2. Safe JSON Parsing inside try...catch
+    let items;
+    try {
+      items = await res.json();
+    } catch (parseError) {
+      console.error("Failed to parse response as JSON:", parseError);
+      throw new Error("Response was not valid JSON");
+    }
+
+    // 3. Update UI
+    if (itemCount) {
+      itemCount.innerHTML = `${items.length} Items 🛍️`;
+    }
+    renderItems(items);
+
+  } catch (err) {
+    console.error("Fetch items error:", err);
+    if (wardrobeList) {
+      wardrobeList.innerHTML = `
+        <p class="text-red-500 font-bold text-center">
+          Server connection failed
+        </p>
+      `;
+    }
+  }
 }
 
 // RENDER CARDS
