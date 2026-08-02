@@ -144,7 +144,7 @@ app.patch("/api/items/:id", upload.single("image"), async (req, res) => {
 : [],
 
                 ...(req.file && {
-                    image: req.file.filename
+                    image: req.file.path
                 })
 
             },
@@ -196,6 +196,24 @@ app.delete('/api/items/:id', async (req, res) => {
                                                    
 console.log("--- APP.JS HAS LOADED ROUTES ---");
 // 3. CATCH-ALL ROUTE TO SERVE INDEX.HTML AT ROOT "/"
+app.get("/api/items", async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        const items = await Item.find(
+            userId ? { userId } : {}
+        );
+
+        res.status(200).json(items);
+
+    } catch (err) {
+        console.log(err);
+
+        res.status(500).json({
+            message: err.message
+        });
+    }
+});
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
