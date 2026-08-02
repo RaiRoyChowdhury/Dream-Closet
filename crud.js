@@ -47,6 +47,7 @@ imageInput.addEventListener("change", () => {
 // FETCH ITEMS (With userId filtering)
 
 async function fetchItems(query = "") {
+   async function fetchItems(query = "") {
     try {
         // Build URL parameters safely
         const separator = query.includes("?") ? "&" : "?";
@@ -55,51 +56,43 @@ async function fetchItems(query = "") {
 
         const res = await fetch(fullUrl);
         console.log("Response status code:", res.status);
-        const rawText = await res.clone().text();
-console.log("Raw response from server:", rawText);
 
-// 3. Parse JSON
-let items;
-try {
-  items = await res.json();
-} catch (parseError) {
-  console.error("Failed to parse response as JSON:", parseError);
-  throw new Error("Response was not valid JSON");
-}
+        // Read raw text once (so we can log it AND safely parse it)
+        const rawText = await res.text();
+        console.log("Raw response from server:", rawText);
+
         // 1. Check HTTP Status
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error(`Server error (HTTP ${res.status}):`, errorText);
-      throw new Error(`Server returned HTTP status ${res.status}`);
-    }
+        if (!res.ok) {
+            console.error(`Server error (HTTP ${res.status}):`, rawText);
+            throw new Error(`Server returned HTTP status ${res.status}`);
+        }
 
-    // 2. Safe JSON Parsing inside try...catch
-    let items;
-    try {
-      items = await res.json();
-    } catch (parseError) {
-      console.error("Failed to parse response as JSON:", parseError);
-      throw new Error("Response was not valid JSON");
-    }
+        // 2. Safe JSON Parsing from rawText
+        let items;
+        try {
+            items = JSON.parse(rawText);
+        } catch (parseError) {
+            console.error("Failed to parse response as JSON:", parseError);
+            throw new Error("Response was not valid JSON");
+        }
 
-    // 3. Update UI
-    if (itemCount) {
-      itemCount.innerHTML = `${items.length} Items 🛍️`;
-    }
-    renderItems(items);
+        // 3. Update UI
+        if (itemCount) {
+            itemCount.innerHTML = `${items.length} Items 🛍️`;
+        }
+        renderItems(items);
 
-  } catch (err) {
-    console.error("Fetch items error:", err);
-    if (wardrobeList) {
-      wardrobeList.innerHTML = `
-        <p class="text-red-500 font-bold text-center">
-          Server connection failed
-        </p>
-      `;
+    } catch (err) {
+        console.error("Fetch items error:", err);
+        if (wardrobeList) {
+            wardrobeList.innerHTML = `
+                <p class="text-red-500 font-bold text-center">
+                    Server connection failed
+                </p>
+            `;
+        }
     }
-  }
 }
-
 // RENDER CARDS
 
 function renderItems(items) {
