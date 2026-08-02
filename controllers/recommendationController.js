@@ -9,11 +9,22 @@ exports.getRecommendation = async(req,res)=>{
 
     try{
 
-        const occasion=req.params.occasion;
+        const occasion = req.params.occasion;
 
-        console.log("Occasion received:", occasion);
+const { userId } = req.query;
 
-        const items = await Item.find();
+console.log("Occasion received:", occasion);
+console.log("User ID received:", userId);
+
+if (!userId) {
+    return res.status(400).json({
+        message: "User ID missing"
+    });
+}
+
+const items = await Item.find({
+    userId: userId
+});
 
         console.log("Items count:", items.length);
 
