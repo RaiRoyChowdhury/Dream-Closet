@@ -84,7 +84,7 @@ Dream Closet aims to combine fashion, technology, and artificial intelligence to
 
 ## © Copyright
 
-**Dream Closet** © 2026 **Your Name**. All Rights Reserved.
+**Dream Closet** © 2026 **Rai Roy Chowdhury**. All Rights Reserved.
 
 This project was designed and developed by **Rai Roy Chowdhury** as a personal portfolio project.
 
