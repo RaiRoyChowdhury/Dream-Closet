@@ -47,7 +47,6 @@ imageInput.addEventListener("change", () => {
 // FETCH ITEMS (With userId filtering)
 
 async function fetchItems(query = "") {
-   async function fetchItems(query = "") {
     try {
         // Build URL parameters safely
         const separator = query.includes("?") ? "&" : "?";
