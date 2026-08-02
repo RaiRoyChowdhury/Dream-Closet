@@ -9,20 +9,21 @@ if (recommendBtn) {
   recommendBtn.addEventListener("click", async () => {
     const occasion = occasionSelect.value;
 
-    // 🔒 1. Retrieve the current user's ID (adjust key name if stored differently, e.g. localStorage.getItem("userId"))
-    const userId = localStorage.getItem("userId") || "YOUR_USER_ID_HERE";
+    // 🔒 Retrieve current user ID
+    const userId = localStorage.getItem("userId") || "";
 
     try {
-      // 🔒 2. Update URL to hit the dedicated curation endpoint with userId and occasion query parameters
+      // 🔒 Fetch recommendation with userId and cache-busting parameter
       const response = await fetch(
-        `https://dream-closet-cd49.onrender.com/api/items/curate?userId=${userId}&occasion=${occasion}`
+        `https://dream-closet-cd49.onrender.com/recommendation/${occasion}?userId=${userId}&_t=${Date.now()}`,
+        { cache: "no-store" }
       );
 
       let outfits = await response.json();
 
       console.log("JSON received:", outfits);
 
-      if (outfits.outfits) {
+      if (outfits && outfits.outfits) {
         outfits = outfits.outfits;
       }
 
