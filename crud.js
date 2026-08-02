@@ -54,6 +54,18 @@ async function fetchItems(query = "") {
         console.log("Fetching items from:", fullUrl);
 
         const res = await fetch(fullUrl);
+        console.log("Response status code:", res.status);
+        const rawText = await res.clone().text();
+console.log("Raw response from server:", rawText);
+
+// 3. Parse JSON
+let items;
+try {
+  items = await res.json();
+} catch (parseError) {
+  console.error("Failed to parse response as JSON:", parseError);
+  throw new Error("Response was not valid JSON");
+}
         // 1. Check HTTP Status
     if (!res.ok) {
       const errorText = await res.text();
