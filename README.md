@@ -80,3 +80,14 @@ Weather-based outfit suggestions
 🎯 Project Vision
 
 Dream Closet aims to combine fashion, technology, and artificial intelligence to create a personalized digital fashion assistant that helps users make better outfit decisions effortlessly.
+
+
+## © Copyright
+
+**Dream Closet** © 2026 **Rai Roy Chowdhury**. All Rights Reserved.
+
+This project was designed and developed by **Rai Roy Chowdhury** as a personal portfolio project.
+
+The source code is publicly available for viewing and learning purposes only. You are welcome to reference the implementation for educational purposes; however, copying, redistributing, or presenting this project (or substantial portions of its code, design, recommendation logic, documentation, or assets) as your own work is not permitted without prior written permission from the author.
+
+For collaborations or permissions, please contact me via GitHub or LinkedIn.
